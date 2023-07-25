@@ -1,0 +1,70 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Compression dictionary transport demo - dynamic resources flow</title>
+</head>
+<div>
+  <h3>
+    Three JS demo (<a href="https://github.com/WICG/compression-dictionary-transport">compression dictionary
+      transport</a> feature dynamic resources flow)
+  </h3>
+</div>
+<div>
+  This demo describes how the <a href="https://github.com/WICG/compression-dictionary-transport">Compression Dictionary
+    Transport</a> feature can be used for compressing HTML files using a shared dictionary.
+</div>
+<div>
+  To try this demo, please follow these instructions:
+  <ol>
+    <li>Use Chrome Canary or Dev (version > 117.0.5906.0).</li>
+    <li>
+      Enable both <a href="chrome://flags/#use-dns-https-svcb-alpn">chrome://flags/#use-dns-https-svcb-alpn</a> and
+      <a
+        href="chrome://flags/#enable-compression-dictionary-transport-backend">chrome://flags/#enable-compression-dictionary-transport-backend</a>
+    </li>
+    <li>
+      Open DevTools (Windows: F12 key, Mac: Command + Option + I), and select the Network tab.
+    </li>
+    <li>
+      Go to <a href="/">the top page</a>
+      <ul>
+        <li>You will see "/dictionary" file fetched. </li>
+        <li>
+          This is triggered by a link tag in the HTML.
+          <pre>&lt;link rel="dictionary" href="/dictionary" /&gt;</pre>
+        <li>
+          When you click "dictionary", you can see this new response header:
+          <pre>Use-As-Dictionary: match="/items/*"</pre>
+        </li>
+        This response header means that the content of "dictionary" can be used as a shared dictionary for fetching
+        resources under "/item/".
+    </li>
+    <li>In <a href="chrome://net-internals/#sharedDictionary">chrome://net-internals/#sharedDictionary</a>, you can see
+      the registered dictionary information.</li>
+    </ul>
+    </li>
+    <li>
+      Click "Man's Shoe" in the top page</a>
+      <ul>
+        <li>The transferred data size for the html file (1f45e.html) will be about "500 B".</li>
+        <li>
+          This is compressed using Shared Brotli using the dictionary. The original size of "1f45e.html" is 105,056
+          bytes.
+          And the compressed data size is 216 bytes.</li>
+        <li>
+          When you click "1f45e.html", you can see this new request header:
+          <pre>Sec-Available-Dictionary:0160ff2aa7cdaae41e7eafa4d5affa7f6fb11dac96beb77762229aa9730af1b6</pre>
+          Also you can see a new "sbr" Accept-Encoding type:
+          <pre>Accept-Encoding: gzip, deflate, br, sbr</pre>
+          This request header means that the browser has a dictionary with the hash, and can use Shared Brotli
+          compression.
+        </li>
+        <li>
+          And the response header has `Content-Encoding: sbr`. This means that the response is compressed using the dictionary.
+        </li>  
+    </li>
+    </ul>
+    </li>
+  </ol>
+</div>
+</html>
