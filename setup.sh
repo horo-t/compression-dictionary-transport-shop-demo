@@ -25,7 +25,7 @@ cd data
 
 rm -f *.br *.sbr *.dict
 
-../third_party/brotli/research/bazel-bin/dictionary_generator -t120k ./shop.dict ./*.html
+../third_party/brotli/research/bazel-bin/dictionary_generator -t100k ./shop.dict ./*.html
 
 ../third_party/brotli/bazel-bin/brotli 1f3bf.html -o 1f3bf.html.br
 ../third_party/brotli/bazel-bin/brotli 1f45e.html -o 1f45e.html.br
