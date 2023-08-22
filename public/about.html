@@ -60,8 +60,14 @@
           compression.
         </li>
         <li>
-          And the response header has `Content-Encoding: sbr`. This means that the response is compressed using the
+          And the response header has `Content-Encoding: sbr`. This means that the response is Shared Brotli compressed using the
           dictionary.
+        </li>
+        <li>
+          If you are using Chrome version &gt; <a href="https://chromiumdash.appspot.com/commit/9ff600f7bba296380dea0b03d33b5887eab088c0">118.0.5952.0</a>,
+          Chrome supports both Shared Brotli and Shared Zstd. You will see `zstd-d` in the Accept-Encoding header.
+          And the server returns the response with `Content-Encoding: zstd-d`. This means that the response is Shared Zstd compressed.
+          You can enable/disable Shared Zstd from <a href="chrome://flags/#enable-shared-zstd">chrome://flags/#enable-shared-zstd</a>.
         </li>
       </ul>
     </li>
