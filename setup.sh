@@ -55,6 +55,19 @@ rm -f *.br *.sbr *.dict
 ../third_party/brotli/bazel-bin/brotli 1fa74.html -D shop.dict -o 1fa74.html.sbr
 ../third_party/brotli/bazel-bin/brotli 26f8.html  -D shop.dict -o  26f8.html.sbr
 
+zstd 1f3bf.html -D shop.dict -19 -o 1f3bf.html.szst
+zstd 1f45e.html -D shop.dict -19 -o 1f45e.html.szst
+zstd 1f45f.html -D shop.dict -19 -o 1f45f.html.szst
+zstd 1f460.html -D shop.dict -19 -o 1f460.html.szst
+zstd 1f461.html -D shop.dict -19 -o 1f461.html.szst
+zstd 1f462.html -D shop.dict -19 -o 1f462.html.szst
+zstd 1f6fc.html -D shop.dict -19 -o 1f6fc.html.szst
+zstd 1f97e.html -D shop.dict -19 -o 1f97e.html.szst
+zstd 1f97f.html -D shop.dict -19 -o 1f97f.html.szst
+zstd 1fa70.html -D shop.dict -19 -o 1fa70.html.szst
+zstd 1fa74.html -D shop.dict -19 -o 1fa74.html.szst
+zstd 26f8.html  -D shop.dict -19 -o  26f8.html.szst
+
 ls -al
 
 npm install

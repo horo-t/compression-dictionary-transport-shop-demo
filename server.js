@@ -21,7 +21,8 @@ async function loadDictionary() {
 async function loadItemData(id) {
   const br = await fs.readFile(`data/${id}.html.br`);
   const sbr = await fs.readFile(`data/${id}.html.sbr`);
-  return { id: id, br: br, sbr: sbr };
+  const szst = await fs.readFile(`data/${id}.html.szst`);
+  return { id: id, br: br, sbr: sbr, szst: szst };
 }
 
 
@@ -59,9 +60,17 @@ ITEMS.forEach((id) => {
     reply.header('cache-control', 'public, max-age=100');
     reply.header('vary', 'sec-available-dictionary');
     const dictHash = request.headers['sec-available-dictionary'];
-    if (dictHash == dictionary.hash) {
-      reply.header('content-encoding', 'sbr');
-      reply.send(Buffer.from(items[id].sbr));
+    const acceptEncodings = request.headers['accept-encoding'].split(',');
+    const sbrSupported = acceptEncodings.some(x => x.trim()=='sbr');
+    const szstSupported = acceptEncodings.some(x => x.trim()=='zstd-d');
+    if (dictHash == dictionary.hash && (sbrSupported || szstSupported)) {
+      if (szstSupported) {
+        reply.header('content-encoding', 'zstd-d');
+        reply.send(Buffer.from(items[id].szst));
+      } else {
+        reply.header('content-encoding', 'sbr');
+        reply.send(Buffer.from(items[id].sbr));
+      }
     } else {
       reply.header('content-encoding', 'br');
       reply.send(Buffer.from(items[id].br));
