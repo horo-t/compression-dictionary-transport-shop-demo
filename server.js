@@ -59,7 +59,7 @@ ITEMS.forEach((id) => {
     const items = await itemsPromise;
     reply.header('content-type', 'text/html; charset=utf-8');
     reply.header('cache-control', 'public, max-age=100');
-    reply.header('vary', 'sec-available-dictionary');
+    reply.header('vary', 'sec-available-dictionary, available-dictionary');
     const v1Matched = request.headers['sec-available-dictionary'] == dictionary.hashV1;
     const v2Matched = request.headers['available-dictionary'] == dictionary.hashV2;
     const acceptEncodings = request.headers['accept-encoding'].split(',');
