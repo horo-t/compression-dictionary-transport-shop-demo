@@ -50,24 +50,18 @@
         <li>
           This is compressed using Shared Brotli using the dictionary. The original size of "1f45e.html" is 105,056
           bytes.
-          And the compressed data size is 1,260 bytes.</li>
+          And the compressed data size is 1,318 bytes.</li>
         <li>
           When you click "1f45e.html", you can see this new request header:
-          <pre>Sec-Available-Dictionary:0160ff2aa7cdaae41e7eafa4d5affa7f6fb11dac96beb77762229aa9730af1b6</pre>
-          Also you can see a new "sbr" Accept-Encoding type:
-          <pre>Accept-Encoding: gzip, deflate, br, sbr</pre>
+          <pre>Available-Dictionary: :tHfcpuKzLUouC+XG9oiG3H4wyfFrKHk9EKtV8rv3Hxk=:</pre>
+          Also you can see new "br-d" and "zstd-d" Accept-Encoding types:
+          <pre>Accept-Encoding: gzip, deflate, br, zstd, br-d, zstd-d</pre>
           This request header means that the browser has a dictionary with the hash, and can use Shared Brotli
-          compression.
+          ans Shared Zstd compression.
         </li>
         <li>
-          And the response header has `Content-Encoding: sbr`. This means that the response is Shared Brotli compressed using the
-          dictionary.
-        </li>
-        <li>
-          If you are using Chrome version &ge; <a href="https://chromiumdash.appspot.com/commit/9ff600f7bba296380dea0b03d33b5887eab088c0">118.0.5952.0</a>,
-          Chrome supports both Shared Brotli and Shared Zstd. You will see `zstd-d` in the Accept-Encoding header.
-          And the server returns the response with `Content-Encoding: zstd-d`. This means that the response is Shared Zstd compressed.
-          You can enable/disable Shared Zstd from <a href="chrome://flags/#enable-shared-zstd">chrome://flags/#enable-shared-zstd</a>.
+          And the response header has <pre>Content-Encoding: zstd-d</pre> and <pre>Content-Dictionary: :tHfcpuKzLUouC+XG9oiG3H4wyfFrKHk9EKtV8rv3Hxk=:</pre> headers.
+          This means that the response is Shared Zstd compressed using the dictionary.
         </li>
       </ul>
     </li>

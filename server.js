@@ -13,10 +13,11 @@ fastify.register(require('@fastify/static'), {
 
 async function loadDictionary() {
   const data = await fs.readFile(`data/shop.dict`);
-  const hashV1 = crypto.createHash('sha256').update(data).digest('hex');
-  const hashV2 = ':' + crypto.createHash('sha256').update(data).digest('base64') + ':';
+  const hash = crypto.createHash('sha256').update(data).digest();
+  const hashV1 = hash.toString('hex');
+  const hashV2 = ':' + hash.toString('base64') + ':';
   const compressed = await fs.readFile(`data/shop.dict.br`);
-  return { hashV1: hashV1, hashV2: hashV2, compressed: compressed };
+  return { hash: hash, hashV1: hashV1, hashV2: hashV2, compressed: compressed };
 }
 
 async function loadItemData(id) {
@@ -65,20 +66,29 @@ ITEMS.forEach((id) => {
     const acceptEncodings = request.headers['accept-encoding'].split(',');
     const sbrSupported = acceptEncodings.some(x => x.trim()=='sbr');
     const szstSupported = acceptEncodings.some(x => x.trim()=='zstd-d');
-    if ((v1Matched || v2Matched) && (sbrSupported || szstSupported)) {
+    const dcbSupported = acceptEncodings.some(x => x.trim()=='dcb');
+    const dczSupported = acceptEncodings.some(x => x.trim()=='dcz');
+    if ((v1Matched || v2Matched) &&
+        (sbrSupported || szstSupported || dcbSupported || dczSupported)) {
       if (v2Matched) {
         reply.header('content-dictionary', dictionary.hashV2);
       }
-      if (szstSupported) {
+      if (dcbSupported) {
+        reply.header('content-encoding', 'dcb');
+        reply.send(Buffer.concat([Buffer.from('DCB'), dictionary.hash, items[id].sbr]));
+      } else if (dczSupported) {
+        reply.header('content-encoding', 'dcz');
+        reply.send(Buffer.concat([Buffer.from('DCZ'), dictionary.hash, items[id].szst]));
+      } else if (szstSupported) {
         reply.header('content-encoding', 'zstd-d');
-        reply.send(Buffer.from(items[id].szst));
+        reply.send(items[id].szst);
       } else {
         reply.header('content-encoding', v2Matched ? 'br-d' : 'sbr');
-        reply.send(Buffer.from(items[id].sbr));
+        reply.send(items[id].sbr);
       }
     } else {
       reply.header('content-encoding', 'br');
-      reply.send(Buffer.from(items[id].br));
+      reply.send(items[id].br);
     }
   });
 });
