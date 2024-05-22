@@ -29,6 +29,8 @@ async function loadItemData(id) {
 
 
 const ITEMS = ['1f3bf', '1f45e', '1f45f', '1f460', '1f461', '1f462', '1f6fc', '1f97e', '1f97f', '1fa70', '1fa74', '26f8'];
+const DCB_MAGIC = Buffer.from([0xff, 0x44, 0x43, 0x42]);
+const DCZ_MAGIC = Buffer.from([0x5e, 0x2a, 0x4d, 0x18, 0x20, 0x00, 0x00, 0x00]);
 
 async function loadItems() {
   let promises = [];
@@ -75,10 +77,10 @@ ITEMS.forEach((id) => {
       }
       if (dcbSupported) {
         reply.header('content-encoding', 'dcb');
-        reply.send(Buffer.concat([Buffer.from('DCB'), dictionary.hash, items[id].sbr]));
+        reply.send(Buffer.concat([DCB_MAGIC, dictionary.hash, items[id].sbr]));
       } else if (dczSupported) {
         reply.header('content-encoding', 'dcz');
-        reply.send(Buffer.concat([Buffer.from('DCZ'), dictionary.hash, items[id].szst]));
+        reply.send(Buffer.concat([DCZ_MAGIC, dictionary.hash, items[id].szst]));
       } else if (szstSupported) {
         reply.header('content-encoding', 'zstd-d');
         reply.send(items[id].szst);
