@@ -75,12 +75,12 @@ ITEMS.forEach((id) => {
       if (v2Matched) {
         reply.header('content-dictionary', dictionary.hashV2);
       }
-      if (dcbSupported) {
-        reply.header('content-encoding', 'dcb');
-        reply.send(Buffer.concat([DCB_MAGIC, dictionary.hash, items[id].sbr]));
-      } else if (dczSupported) {
+      if (dczSupported) {
         reply.header('content-encoding', 'dcz');
         reply.send(Buffer.concat([DCZ_MAGIC, dictionary.hash, items[id].szst]));
+      } else if (dcbSupported) {
+        reply.header('content-encoding', 'dcb');
+        reply.send(Buffer.concat([DCB_MAGIC, dictionary.hash, items[id].sbr]));
       } else if (szstSupported) {
         reply.header('content-encoding', 'zstd-d');
         reply.send(items[id].szst);
